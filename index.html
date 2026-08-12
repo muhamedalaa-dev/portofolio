@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Mohamed Alaa — Front-End Developer</title>
+<meta name="description" content="Mohamed Alaa — Front-end developer in Cairo. Fast, bilingual (EN/AR) landing pages for restaurants, cafés and local businesses.">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Tailwind (CDN / play) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          bg: '#15110D',
+          bgElev: '#1D1712',
+          bgElev2: '#241C15',
+          paper: '#F6EFE3',
+          ink: '#F3ECDF',
+          inkDim: '#B6AC9A',
+          ember: '#FF7A3D',
+          emberDim: '#C9612E',
+          sage: '#8FB49A',
+          line: 'rgba(246,239,227,0.12)',
+        },
+        fontFamily: {
+          display: ['"Fraunces"', 'serif'],
+          sans: ['"Inter"', 'sans-serif'],
+          arabic: ['"Cairo"', 'sans-serif'],
+        },
+      }
+    }
+  }
+</script>
+
+<!-- Lucide icons -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<style>
+  :root{
+    --grain-opacity: .05;
+  }
+  html { scroll-behavior: smooth; }
+  body{
+    background-color:#15110D;
+    color:#F3ECDF;
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+  }
+  html[dir="rtl"] body{ font-family:'Cairo', sans-serif; }
+  .font-display{ font-family:'Fraunces', serif; }
+  html[dir="rtl"] .font-display{ font-family:'Cairo', sans-serif; }
+
+  /* subtle grain overlay */
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:60; opacity:var(--grain-opacity); mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .ember-glow{
+    background: radial-gradient(closest-side, rgba(255,122,61,.35), rgba(255,122,61,0) 70%);
+    filter: blur(10px);
+  }
+
+  .divider-dash{
+    background-image: repeating-linear-gradient(90deg, rgba(246,239,227,.35) 0 6px, transparent 6px 14px);
+    height:1px;
+  }
+
+  .menu-number{
+    font-family:'Fraunces', serif;
+    font-variant-numeric: oldstyle-nums;
+  }
+  html[dir="rtl"] .menu-number{ font-family:'Cairo', sans-serif; }
+
+  .card-hover{ transition: transform .45s cubic-bezier(.16,1,.3,1), border-color .3s ease, box-shadow .3s ease; }
+  .card-hover:hover{ transform: translateY(-6px); border-color: rgba(255,122,61,.45); box-shadow: 0 20px 60px -20px rgba(0,0,0,.6); }
+
+  .chip{
+    font-size:.7rem; letter-spacing:.02em; padding:.28rem .6rem; border-radius:999px;
+    border:1px solid var(--line); color:#B6AC9A; white-space:nowrap;
+  }
+
+  .nav-link{ position:relative; }
+  .nav-link::after{
+    content:''; position:absolute; left:0; right:0; bottom:-6px; height:1px; background:#FF7A3D;
+    transform:scaleX(0); transform-origin:left; transition:transform .35s cubic-bezier(.16,1,.3,1);
+  }
+  html[dir="rtl"] .nav-link::after{ transform-origin:right; }
+  .nav-link:hover::after{ transform:scaleX(1); }
+
+  .flip-rtl{ transition: transform .2s ease; }
+  html[dir="rtl"] .flip-rtl{ transform: scaleX(-1); }
+
+  .lang-toggle-track{ width:56px; height:30px; border-radius:999px; background:#241C15; border:1px solid var(--line); position:relative; }
+  .lang-toggle-dot{
+    position:absolute; top:2px; left:2px; width:24px; height:24px; border-radius:999px; background:#FF7A3D;
+    display:flex; align-items:center; justify-content:center; font-size:.62rem; font-weight:700; color:#15110D;
+    transition: left .3s cubic-bezier(.16,1,.3,1), right .3s cubic-bezier(.16,1,.3,1);
+  }
+  html[dir="rtl"] .lang-toggle-dot{ left:auto; right:2px; }
+
+  .frame-photo{
+    border:1px solid var(--line);
+    background: linear-gradient(155deg, #241C15, #17130E);
+    padding:10px;
+  }
+  .frame-photo img{ filter: grayscale(.15) contrast(1.05); }
+
+  input::placeholder, textarea::placeholder{ color:#8A8172; }
+  select option { background:#1D1712; color:#F3ECDF; }
+
+  .reveal{ opacity:0; }
+
+  ::selection{ background:#FF7A3D; color:#15110D; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body class="bg-bg text-ink antialiased">
+
+<div class="grain"></div>
+
+<!-- ============ NAV ============ -->
+<header id="top" class="fixed top-0 inset-x-0 z-50 border-b border-line bg-bg/80 backdrop-blur-md">
+  <div class="max-w-6xl mx-auto px-5 md:px-8 h-16 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-2 font-display text-lg tracking-tight">
+      <span class="w-8 h-8 rounded-full bg-ember/15 border border-ember/40 flex items-center justify-center text-ember">
+        <i data-lucide="flame" class="w-4 h-4"></i>
+      </span>
+      <span data-en="Mohamed Alaa" data-ar="محمد علاء">Mohamed Alaa</span>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-8 text-sm text-inkDim">
+      <a href="#menu" class="nav-link hover:text-ink" data-en="Menu" data-ar="المنيو">Menu</a>
+      <a href="#method" class="nav-link hover:text-ink" data-en="Method" data-ar="الطريقة">Method</a>
+      <a href="#stack" class="nav-link hover:text-ink" data-en="Stack" data-ar="الأدوات">Stack</a>
+      <a href="#contact" class="nav-link hover:text-ink" data-en="Contact" data-ar="تواصل">Contact</a>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <button id="langToggle" class="flex items-center gap-2 text-xs text-inkDim group" aria-label="Toggle language">
+        <span data-en="AR" data-ar="EN" class="hidden sm:inline">AR</span>
+        <span class="lang-toggle-track"><span class="lang-toggle-dot" id="langDot">AR</span></span>
+      </button>
+      <a href="#contact" class="hidden md:inline-flex items-center gap-1.5 bg-ember text-bg text-sm font-medium px-4 py-2 rounded-full hover:bg-[#ff8f5c] transition-colors">
+        <span data-en="Let's talk" data-ar="نتكلم">Let's talk</span>
+      </a>
+      <button id="menuBtn" class="md:hidden w-9 h-9 flex items-center justify-center rounded-full border border-line" aria-label="Open menu">
+        <i data-lucide="menu" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- mobile menu -->
+  <div id="mobileMenu" class="md:hidden hidden border-t border-line bg-bgElev px-5 py-5 space-y-4">
+    <a href="#menu" class="block text-sm text-inkDim" data-en="Menu" data-ar="المنيو">Menu</a>
+    <a href="#method" class="block text-sm text-inkDim" data-en="Method" data-ar="الطريقة">Method</a>
+    <a href="#stack" class="block text-sm text-inkDim" data-en="Stack" data-ar="الأدوات">Stack</a>
+    <a href="#contact" class="block text-sm text-inkDim" data-en="Contact" data-ar="تواصل">Contact</a>
+    <a href="#contact" class="inline-flex items-center gap-1.5 bg-ember text-bg text-sm font-medium px-4 py-2 rounded-full mt-2">
+      <span data-en="Let's talk" data-ar="نتكلم">Let's talk</span>
+    </a>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="relative pt-36 pb-20 md:pt-44 md:pb-28 px-5 md:px-8 overflow-hidden">
+  <div class="absolute -top-24 ltr:-right-24 rtl:-left-24 w-[420px] h-[420px] ember-glow rounded-full"></div>
+  <div class="max-w-6xl mx-auto relative">
+    <div class="reveal-hero flex items-center gap-2 text-xs tracking-[.18em] uppercase text-ember mb-6">
+      <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+      <span data-en="Front-end developer · El Shorouk, Cairo" data-ar="مطوّر واجهات أمامية · الشروق، القاهرة">Front-end developer · El Shorouk, Cairo</span>
+    </div>
+
+    <h1 class="reveal-hero font-display text-[2.6rem] leading-[1.05] sm:text-6xl md:text-7xl max-w-3xl">
+      <span data-en="Code, " data-ar="الكود ">Code, </span><em class="italic text-ember" data-en="plated." data-ar="بيتقدَّم بإتقان.">plated.</em>
+    </h1>
+
+    <p class="reveal-hero mt-6 max-w-xl text-inkDim text-base md:text-lg leading-relaxed"
+       data-en="I design and build fast, bilingual landing pages for restaurants, cafés and local businesses — from first sketch to a site that actually takes orders."
+       data-ar="بصمّم وأبرمج صفحات هبوط سريعة وثنائية اللغة للمطاعم والكافيهات والمشاريع المحلية — من أول فكرة لحد موقع بياخد طلبات حقيقية.">
+      I design and build fast, bilingual landing pages for restaurants, cafés and local businesses — from first sketch to a site that actually takes orders.
+    </p>
+
+    <div class="reveal-hero mt-9 flex flex-wrap items-center gap-4">
+      <a href="#menu" class="inline-flex items-center gap-2 bg-ember text-bg font-medium px-6 py-3.5 rounded-full hover:bg-[#ff8f5c] transition-colors">
+        <span data-en="See the menu" data-ar="شوف المنيو">See the menu</span>
+        <i data-lucide="arrow-right" class="w-4 h-4 flip-rtl"></i>
+      </a>
+      <a href="https://github.com/muhamedalaa-dev" target="_blank" rel="noopener" class="inline-flex items-center gap-2 border border-line px-6 py-3.5 rounded-full text-ink hover:border-ember/50 transition-colors">
+        <i data-lucide="github" class="w-4 h-4"></i>
+        <span data-en="View GitHub" data-ar="شوف الجيت هَب">View GitHub</span>
+      </a>
+    </div>
+
+    <!-- stats -->
+    <div class="reveal-hero mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 border-t border-line pt-8">
+      <div>
+        <div class="font-display text-3xl text-ember">05</div>
+        <div class="text-xs text-inkDim mt-1" data-en="Live client sites" data-ar="مواقع شغّالة فعليًا">Live client sites</div>
+      </div>
+      <div>
+        <div class="font-display text-3xl text-ember">02</div>
+        <div class="text-xs text-inkDim mt-1" data-en="Languages, every build" data-ar="لغتين في كل موقع">Languages, every build</div>
+      </div>
+      <div>
+        <div class="font-display text-3xl text-ember">100%</div>
+        <div class="text-xs text-inkDim mt-1" data-en="Mobile-first" data-ar="مصمم للموبايل الأول">Mobile-first</div>
+      </div>
+      <div>
+        <div class="font-display text-3xl text-ember" data-en="0" data-ar="صفر">0</div>
+        <div class="text-xs text-inkDim mt-1" data-en="Heavy frameworks" data-ar="بدون فريمووركس تقيلة">Heavy frameworks</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT / PHOTO ============ -->
+<section class="px-5 md:px-8 py-16 md:py-24 border-t border-line">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-[280px,1fr] gap-10 md:gap-16 items-center">
+    <div class="reveal frame-photo w-full max-w-[280px] mx-auto md:mx-0 rotate-[-1.5deg]">
+      <img src="assets/profile.jpg" alt="Mohamed Alaa" class="w-full aspect-[4/5] object-cover object-top">
+    </div>
+    <div class="reveal">
+      <div class="text-xs tracking-[.18em] uppercase text-ember mb-4" data-en="About" data-ar="نبذة">About</div>
+      <h2 class="font-display text-3xl md:text-4xl leading-tight max-w-lg"
+          data-en="Small kitchen, honest ingredients."
+          data-ar="مطبخ صغير، ومكوّنات حقيقية.">
+        Small kitchen, honest ingredients.
+      </h2>
+      <p class="mt-5 text-inkDim leading-relaxed max-w-xl"
+         data-en="I'm Mohamed Alaa — a front-end developer based in Cairo, Egypt. Most of my work has been for restaurants, cafés and service businesses around El Shorouk: sites people actually call, book a table on, and order from. No page builders, no bloated frameworks — just hand-written HTML, CSS/Tailwind and JavaScript, shipped fast and built to work in Arabic and English from day one."
+         data-ar="أنا محمد علاء، مطوّر واجهات أمامية من القاهرة. معظم شغلي كان لمطاعم وكافيهات ومشاريع خدمية في منطقة الشروق — مواقع الناس فعلاً بتتصل منها، تحجز طاولة، وتطلب أكل. من غير بيلدرز جاهزة ولا فريمووركس تقيلة — كود HTML وCSS/Tailwind وJavaScript مكتوب بإيدي، وشغّال بالعربي والإنجليزي من أول يوم.">
+        I'm Mohamed Alaa — a front-end developer based in Cairo, Egypt. Most of my work has been for restaurants, cafés and service businesses around El Shorouk: sites people actually call, book a table on, and order from. No page builders, no bloated frameworks — just hand-written HTML, CSS/Tailwind and JavaScript, shipped fast and built to work in Arabic and English from day one.
+      </p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <span class="chip flex items-center gap-1.5"><i data-lucide="languages" class="w-3.5 h-3.5"></i><span data-en="Arabic & English" data-ar="عربي وإنجليزي">Arabic & English</span></span>
+        <span class="chip flex items-center gap-1.5"><i data-lucide="smartphone" class="w-3.5 h-3.5"></i><span data-en="Mobile-first" data-ar="موبايل أولًا">Mobile-first</span></span>
+        <span class="chip flex items-center gap-1.5"><i data-lucide="git-branch" class="w-3.5 h-3.5"></i><span data-en="Vanilla JS" data-ar="جافاسكريبت خام">Vanilla JS</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MENU / PROJECTS ============ -->
+<section id="menu" class="px-5 md:px-8 py-20 md:py-28 border-t border-line bg-bgElev/40">
+  <div class="max-w-6xl mx-auto">
+    <div class="reveal flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-14">
+      <div>
+        <div class="text-xs tracking-[.18em] uppercase text-ember mb-4" data-en="Selected Work" data-ar="أعمال مختارة">Selected Work</div>
+        <h2 class="font-display text-4xl md:text-5xl" data-en="The Menu" data-ar="المنيو">The Menu</h2>
+      </div>
+      <p class="text-inkDim max-w-sm text-sm leading-relaxed" data-en="Five live projects, course by course — real businesses, real menus, real bookings." data-ar="خمس مشاريع شغّالة فعليًا، طبق ورا طبق — بيزنسات حقيقية، ومنيوهات حقيقية، وحجوزات حقيقية.">
+        Five live projects, course by course — real businesses, real menus, real bookings.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+
+      <!-- 01 Kalimary -->
+      <article class="reveal card-hover border border-line rounded-2xl p-7 md:p-8 bg-bgElev flex flex-col">
+        <div class="flex items-start justify-between mb-5">
+          <span class="menu-number text-ember text-sm">01</span>
+          <i data-lucide="coffee" class="w-5 h-5 text-inkDim"></i>
+        </div>
+        <h3 class="font-display text-2xl mb-2" data-en="Kalimary Café &amp; Restaurant" data-ar="كافيه كاليماري">Kalimary Café &amp; Restaurant</h3>
+        <p class="text-inkDim text-sm leading-relaxed mb-5" data-en="An all-day café &amp; restaurant site for El Shorouk — full menu, table reservations and a built-in Arabic/English switch." data-ar="موقع كافيه ومطعم مفتوح طول اليوم في الشروق — منيو كامل، حجز طاولات، وزرار تبديل عربي/إنجليزي مدمج.">
+          An all-day café &amp; restaurant site for El Shorouk — full menu, table reservations and a built-in Arabic/English switch.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JavaScript</span><span class="chip" data-en="EN/AR toggle" data-ar="زرار عربي/إنجليزي">EN/AR toggle</span>
+        </div>
+        <ul class="text-xs text-inkDim space-y-1.5 mb-7">
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-sage"></i><span data-en="Table reservation form" data-ar="فورم حجز طاولة">Table reservation form</span></li>
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-sage"></i><span data-en="Google review strip" data-ar="شريط تقييمات جوجل">Google review strip</span></li>
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-sage"></i><span data-en="Sticky menu navigation" data-ar="نافيجيشن ثابت للمنيو">Sticky menu navigation</span></li>
+        </ul>
+        <div class="mt-auto flex items-center gap-4 pt-4 border-t border-line">
+          <a href="https://mohamed-alaa-99.github.io/kalimary-cafe-elshoroq/" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm text-ember hover:underline">
+            <span data-en="Live preview" data-ar="شوف الموقع">Live preview</span><i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          </a>
+          <a href="https://github.com/muhamedalaa-dev/kalimary-cafe-elshoroq" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm text-inkDim hover:text-ink">
+            <i data-lucide="github" class="w-3.5 h-3.5"></i><span data-en="Code" data-ar="الكود">Code</span>
+          </a>
+        </div>
+      </article>
+
+      <!-- 02 Car service -->
+      <article class="reveal card-hover border border-line rounded-2xl p-7 md:p-8 bg-bgElev flex flex-col">
+        <div class="flex items-start justify-between mb-5">
+          <span class="menu-number text-ember text-sm">02</span>
+          <i data-lucide="wrench" class="w-5 h-5 text-inkDim"></i>
+        </div>
+        <h3 class="font-display text-2xl mb-2" data-en="Markaz Al-Khubara' Car Service" data-ar="مركز الخبراء لصيانة السيارات">Markaz Al-Khubara' Car Service</h3>
+        <p class="text-inkDim text-sm leading-relaxed mb-5" data-en="An Arabic-first landing page for a car maintenance center — services, trust stats and a working booking form, built right-to-left." data-ar="صفحة هبوط بالعربي لمركز صيانة سيارات — خدمات، أرقام تعزّز الثقة، وفورم حجز شغّال، ومبني بالكامل بتصميم من اليمين لليسار.">
+          An Arabic-first landing page for a car maintenance center — services, trust stats and a working booking form, built right-to-left.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JavaScript</span><span class="chip" data-en="RTL layout" data-ar="تصميم RTL">RTL layout</span>
+        </div>
+        <ul class="text-xs text-inkDim space-y-1.5 mb-7">
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-sage"></i><span data-en="Appointment booking form" data-ar="فورم حجز معاد">Appointment booking form</span></li>
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-sage"></i><span data-en="Service breakdown cards" data-ar="كروت شرح الخدمات">Service breakdown cards</span></li>
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-sage"></i><span data-en="Click-to-call CTA" data-ar="زرار اتصال مباشر">Click-to-call CTA</span></li>
+        </ul>
+        <div class="mt-auto flex items-center gap-4 pt-4 border-t border-line">
+          <a href="https://mohamed-alaa-99.github.io/car-service-landing/" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm text-ember hover:underline">
+            <span data-en="Live preview" data-ar="شوف الموقع">Live preview</span><i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          </a>
+          <a href="https://github.com/muhamedalaa-dev/car-service-landing" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm text-inkDim hover:text-ink">
+            <i data-lucide="github" class="w-3.5 h-3.5"></i><span data-en="Code" data-ar="الكود">Code</span>
+          </a>
+        </div>
+      </article>
+
+      <!-- 03 Sham El-Ezz -->
+      <article class="reveal card-hover border border-line rounded-2xl p-7 md:p-8 bg-bgElev flex flex-col">
+        <div class="flex items-start justify-between mb-5">
+          <span class="menu-number text-ember text-sm">03</span>
+          <i data-lucide="soup" class="w-5 h-5 text-inkDim"></i>
+        </div>
+        <h3 class="font-display text-2xl mb-2" data-en="Sham El-Ezz — Syrian Kitchen" data-ar="شام العز">Sham El-Ezz — Syrian Kitchen</h3>
+        <p class="text-inkDim text-sm leading-relaxed mb-5" data-en="A restaurant site for a late-night Damascene kitchen in El Shorouk — menu highlights, review wall and a direct link into online ordering." data-ar="موقع مطعم لمطبخ شامي مفتوح لحد الفجر في الشروق — أطباق مميزة، آراء الزباين، ورابط مباشر للطلب أونلاين.">
+          A restaurant site for a late-night Damascene kitchen in El Shorouk — menu highlights, review wall and a direct link into online ordering.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="chip">HTML</span><span class="chip">Tailwind CSS</span><span class="chip">JavaScript</span>
+        </div>
+        <ul class="text-xs text-inkDim space-y-1.5 mb-7">
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-sage"></i><span data-en="Google review carousel" data-ar="سلايدر تقييمات جوجل">Google review carousel</span></li>
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-sage"></i><span data-en="Online-ordering integration" data-ar="ربط مع منصة الطلب أونلاين">Online-ordering integration</span></li>
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-sage"></i><span data-en="Map &amp; directions link" data-ar="رابط خريطة واتجاهات">Map &amp; directions link</span></li>
+        </ul>
+        <div class="mt-auto flex items-center gap-4 pt-4 border-t border-line">
+          <a href="https://mohamed-alaa-99.github.io/sham-elezz/" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm text-ember hover:underline">
+            <span data-en="Live preview" data-ar="شوف الموقع">Live preview</span><i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          </a>
+          <a href="https://github.com/muhamedalaa-dev/sham-elezz" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm text-inkDim hover:text-ink">
+            <i data-lucide="github" class="w-3.5 h-3.5"></i><span data-en="Code" data-ar="الكود">Code</span>
+          </a>
+        </div>
+      </article>
+
+      <!-- 04 Burgerist -->
+      <article class="reveal card-hover border border-line rounded-2xl p-7 md:p-8 bg-bgElev flex flex-col">
+        <div class="flex items-start justify-between mb-5">
+          <span class="menu-number text-ember text-sm">04</span>
+          <i data-lucide="beef" class="w-5 h-5 text-inkDim"></i>
+        </div>
+        <h3 class="font-display text-2xl mb-2" data-en="The Burgerist" data-ar="ذا برجريست">The Burgerist</h3>
+        <p class="text-inkDim text-sm leading-relaxed mb-5" data-en="A smash-burger brand site built around &quot;the method&quot; — a scroll-driven, three-step story from patty to plate." data-ar="موقع لبراند سماش برجر مبني حول «الطريقة» — قصة بتتحرك مع السكرول في ٣ خطوات من اللحمة لحد الطبق.">
+          A smash-burger brand site built around "the method" — a scroll-driven, three-step story from patty to plate.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="chip">HTML</span><span class="chip">Tailwind CSS</span><span class="chip">JavaScript</span><span class="chip" data-en="Scroll reveals" data-ar="حركة مع السكرول">Scroll reveals</span>
+        </div>
+        <ul class="text-xs text-inkDim space-y-1.5 mb-7">
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-sage"></i><span data-en="Animated process section" data-ar="سكشن متحرك يشرح الطريقة">Animated process section</span></li>
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-sage"></i><span data-en="Full priced menu" data-ar="منيو كامل بالأسعار">Full priced menu</span></li>
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-sage"></i><span data-en="Customer review wall" data-ar="حائط آراء العملاء">Customer review wall</span></li>
+        </ul>
+        <div class="mt-auto flex items-center gap-4 pt-4 border-t border-line">
+          <a href="https://mohamed-alaa-99.github.io/the-burgerist/" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm text-ember hover:underline">
+            <span data-en="Live preview" data-ar="شوف الموقع">Live preview</span><i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          </a>
+          <a href="https://github.com/muhamedalaa-dev/the-burgerist" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm text-inkDim hover:text-ink">
+            <i data-lucide="github" class="w-3.5 h-3.5"></i><span data-en="Code" data-ar="الكود">Code</span>
+          </a>
+        </div>
+      </article>
+
+      <!-- 05 Fire Hub (full width) -->
+      <article class="reveal card-hover md:col-span-2 border border-line rounded-2xl p-7 md:p-9 bg-gradient-to-br from-bgElev to-bgElev2 flex flex-col md:flex-row gap-8 md:items-center">
+        <div class="flex-1">
+          <div class="flex items-start justify-between mb-5 md:hidden">
+            <span class="menu-number text-ember text-sm">05</span>
+            <i data-lucide="flame" class="w-5 h-5 text-inkDim"></i>
+          </div>
+          <div class="hidden md:flex items-center gap-3 mb-4">
+            <span class="menu-number text-ember text-sm">05</span>
+            <i data-lucide="flame" class="w-5 h-5 text-inkDim"></i>
+          </div>
+          <h3 class="font-display text-2xl md:text-3xl mb-2" data-en="Fire Hub" data-ar="فاير هَب">Fire Hub</h3>
+          <p class="text-inkDim text-sm leading-relaxed mb-5 max-w-lg" data-en="A fully bilingual delivery-only brand for a charcoal grill — English and Arabic on every single line, built to feed straight into Talabat ordering." data-ar="براند توصيل فقط لمطعم مشويات فحم — ثنائي اللغة بالكامل، كل سطر بالعربي والإنجليزي، ومبني عشان يوصل مباشرة لصفحة الطلب على طلبات.">
+            A fully bilingual delivery-only brand for a charcoal grill — English and Arabic on every single line, built to feed straight into Talabat ordering.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-5">
+            <span class="chip">HTML</span><span class="chip">Tailwind CSS</span><span class="chip">JavaScript</span><span class="chip" data-en="EN/AR toggle" data-ar="زرار عربي/إنجليزي">EN/AR toggle</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <a href="https://mohamed-alaa-99.github.io/firehub/" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm text-ember hover:underline">
+              <span data-en="Live preview" data-ar="شوف الموقع">Live preview</span><i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            </a>
+            <a href="https://github.com/muhamedalaa-dev/firehub" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-sm text-inkDim hover:text-ink">
+              <i data-lucide="github" class="w-3.5 h-3.5"></i><span data-en="Code" data-ar="الكود">Code</span>
+            </a>
+          </div>
+        </div>
+        <ul class="text-xs text-inkDim space-y-2 md:w-56 md:border-l md:rtl:border-l-0 md:rtl:border-r md:border-line md:pl-8 md:rtl:pl-0 md:rtl:pr-8">
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-sage"></i><span data-en="Delivery-info card" data-ar="كارت معلومات التوصيل">Delivery-info card</span></li>
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-sage"></i><span data-en="Live daily offers" data-ar="عروض يومية">Live daily offers</span></li>
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-sage"></i><span data-en="Talabat order flow" data-ar="ربط مع طلبات">Talabat order flow</span></li>
+          <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-sage"></i><span data-en="Mirrored RTL layout" data-ar="تصميم متطابق RTL">Mirrored RTL layout</span></li>
+        </ul>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ METHOD ============ -->
+<section id="method" class="px-5 md:px-8 py-20 md:py-28 border-t border-line">
+  <div class="max-w-6xl mx-auto">
+    <div class="reveal mb-14">
+      <div class="text-xs tracking-[.18em] uppercase text-ember mb-4" data-en="How I Work" data-ar="طريقة الشغل">How I Work</div>
+      <h2 class="font-display text-4xl md:text-5xl max-w-lg" data-en="Prep, cook, plate." data-ar="تحضير، طبخ، تقديم.">Prep, cook, plate.</h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="reveal border border-line rounded-2xl p-7 bg-bgElev">
+        <div class="flex items-center gap-3 mb-5">
+          <span class="menu-number text-ember text-sm">01</span>
+          <i data-lucide="clipboard-list" class="w-5 h-5 text-sage"></i>
+        </div>
+        <h3 class="font-display text-xl mb-3" data-en="Prep" data-ar="التحضير">Prep</h3>
+        <p class="text-inkDim text-sm leading-relaxed" data-en="Understand the business, gather the real content — menu, prices, photos, hours — and sketch the structure before a line of code is written." data-ar="بفهم البيزنس، وبجمع المحتوى الحقيقي — المنيو، الأسعار، الصور، المواعيد — وبرسم هيكل الصفحة قبل ما اكتب أي سطر كود.">
+          Understand the business, gather the real content — menu, prices, photos, hours — and sketch the structure before a line of code is written.
+        </p>
+      </div>
+      <div class="reveal border border-line rounded-2xl p-7 bg-bgElev">
+        <div class="flex items-center gap-3 mb-5">
+          <span class="menu-number text-ember text-sm">02</span>
+          <i data-lucide="flame" class="w-5 h-5 text-ember"></i>
+        </div>
+        <h3 class="font-display text-xl mb-3" data-en="Cook" data-ar="الطبخ">Cook</h3>
+        <p class="text-inkDim text-sm leading-relaxed" data-en="Build mobile-first with HTML, Tailwind and vanilla JS, write both language versions side by side, and add motion that earns its place." data-ar="ببني الموقع موبايل أولًا بـ HTML وTailwind وجافاسكريبت خام، وبكتب النسختين اللغويتين مع بعض، وبضيف حركة بس لو هتضيف قيمة فعلًا.">
+          Build mobile-first with HTML, Tailwind and vanilla JS, write both language versions side by side, and add motion that earns its place.
+        </p>
+      </div>
+      <div class="reveal border border-line rounded-2xl p-7 bg-bgElev">
+        <div class="flex items-center gap-3 mb-5">
+          <span class="menu-number text-ember text-sm">03</span>
+          <i data-lucide="sparkles" class="w-5 h-5 text-sage"></i>
+        </div>
+        <h3 class="font-display text-xl mb-3" data-en="Plate" data-ar="التقديم">Plate</h3>
+        <p class="text-inkDim text-sm leading-relaxed" data-en="Wire up real forms with Web3Forms, test on real phones on a real connection, and hand over a site that's ready to take orders." data-ar="بربط الفورمز الحقيقية بـ Web3Forms، وبجرّب الموقع على موبايلات وإنترنت حقيقي، وبسلّم موقع جاهز ياخد طلبات فعلًا.">
+          Wire up real forms with Web3Forms, test on real phones on a real connection, and hand over a site that's ready to take orders.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STACK ============ -->
+<section id="stack" class="px-5 md:px-8 py-20 md:py-28 border-t border-line bg-bgElev/40">
+  <div class="max-w-6xl mx-auto">
+    <div class="reveal mb-14">
+      <div class="text-xs tracking-[.18em] uppercase text-ember mb-4" data-en="Kitchen Equipment" data-ar="أدوات المطبخ">Kitchen Equipment</div>
+      <h2 class="font-display text-4xl md:text-5xl max-w-lg" data-en="The stack behind every dish." data-ar="الأدوات ورا كل طبق.">The stack behind every dish.</h2>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="reveal border border-line rounded-xl p-5 bg-bgElev flex flex-col items-start gap-3">
+        <i data-lucide="code-2" class="w-5 h-5 text-ember"></i>
+        <span class="text-sm">HTML5</span>
+      </div>
+      <div class="reveal border border-line rounded-xl p-5 bg-bgElev flex flex-col items-start gap-3">
+        <i data-lucide="palette" class="w-5 h-5 text-ember"></i>
+        <span class="text-sm">CSS3 / Tailwind</span>
+      </div>
+      <div class="reveal border border-line rounded-xl p-5 bg-bgElev flex flex-col items-start gap-3">
+        <i data-lucide="braces" class="w-5 h-5 text-ember"></i>
+        <span class="text-sm">JavaScript (ES6+)</span>
+      </div>
+      <div class="reveal border border-line rounded-xl p-5 bg-bgElev flex flex-col items-start gap-3">
+        <i data-lucide="move-3d" class="w-5 h-5 text-ember"></i>
+        <span class="text-sm">GSAP</span>
+      </div>
+      <div class="reveal border border-line rounded-xl p-5 bg-bgElev flex flex-col items-start gap-3">
+        <i data-lucide="shapes" class="w-5 h-5 text-ember"></i>
+        <span class="text-sm">Lucide Icons</span>
+      </div>
+      <div class="reveal border border-line rounded-xl p-5 bg-bgElev flex flex-col items-start gap-3">
+        <i data-lucide="send" class="w-5 h-5 text-ember"></i>
+        <span class="text-sm">Web3Forms</span>
+      </div>
+      <div class="reveal border border-line rounded-xl p-5 bg-bgElev flex flex-col items-start gap-3">
+        <i data-lucide="git-branch" class="w-5 h-5 text-ember"></i>
+        <span class="text-sm">Git &amp; GitHub</span>
+      </div>
+      <div class="reveal border border-line rounded-xl p-5 bg-bgElev flex flex-col items-start gap-3">
+        <i data-lucide="languages" class="w-5 h-5 text-ember"></i>
+        <span class="text-sm" data-en="Responsive &amp; RTL" data-ar="ريسبونسيف و RTL">Responsive &amp; RTL</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact" class="px-5 md:px-8 py-20 md:py-28 border-t border-line">
+  <div class="max-w-6xl mx-auto grid lg:grid-cols-[1fr,1.2fr] gap-12 lg:gap-16">
+
+    <div class="reveal">
+      <div class="text-xs tracking-[.18em] uppercase text-ember mb-4" data-en="Get In Touch" data-ar="تواصل معايا">Get In Touch</div>
+      <h2 class="font-display text-4xl md:text-5xl mb-6" data-en="Reserve a project." data-ar="احجز مشروعك.">Reserve a project.</h2>
+      <p class="text-inkDim leading-relaxed mb-8 max-w-md" data-en="Have a restaurant, café or local business that needs a fast, bilingual site? Tell me a bit about it below, or reach out directly." data-ar="عندك مطعم أو كافيه أو مشروع محلي محتاج موقع سريع وثنائي اللغة؟ احكيلي عنه في الفورم تحت، أو تواصل معايا مباشرة.">
+        Have a restaurant, café or local business that needs a fast, bilingual site? Tell me a bit about it below, or reach out directly.
+      </p>
+
+      <div class="space-y-4">
+        <a href="mailto:mohameedalaa342@gmail.com" class="flex items-center gap-4 group">
+          <span class="w-11 h-11 rounded-full border border-line flex items-center justify-center text-ember group-hover:bg-ember group-hover:text-bg transition-colors"><i data-lucide="mail" class="w-4 h-4"></i></span>
+          <div>
+            <div class="text-xs text-inkDim" data-en="Email" data-ar="إيميل">Email</div>
+            <div class="text-sm">mohameedalaa342@gmail.com</div>
+          </div>
+        </a>
+        <a href="tel:+201096631390" class="flex items-center gap-4 group">
+          <span class="w-11 h-11 rounded-full border border-line flex items-center justify-center text-ember group-hover:bg-ember group-hover:text-bg transition-colors"><i data-lucide="phone" class="w-4 h-4"></i></span>
+          <div>
+            <div class="text-xs text-inkDim" data-en="Phone / WhatsApp" data-ar="تليفون / واتساب">Phone / WhatsApp</div>
+            <div class="text-sm" dir="ltr">+20 109 663 1390</div>
+          </div>
+        </a>
+        <a href="https://github.com/muhamedalaa-dev" target="_blank" rel="noopener" class="flex items-center gap-4 group">
+          <span class="w-11 h-11 rounded-full border border-line flex items-center justify-center text-ember group-hover:bg-ember group-hover:text-bg transition-colors"><i data-lucide="github" class="w-4 h-4"></i></span>
+          <div>
+            <div class="text-xs text-inkDim" data-en="GitHub" data-ar="جيت هَب">GitHub</div>
+            <div class="text-sm">github.com/muhamedalaa-dev</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <form id="contactForm" class="border border-line rounded-2xl p-6 md:p-8 bg-bgElev">
+        <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY">
+        <input type="hidden" name="subject" value="New project inquiry from portfolio site">
+        <input type="checkbox" name="botcheck" class="hidden" style="display:none">
+
+        <div class="flex items-center gap-2 text-xs text-inkDim mb-6 pb-6 border-b border-dashed border-line">
+          <i data-lucide="utensils" class="w-4 h-4 text-ember"></i>
+          <span data-en="Table for one project, please" data-ar="طاولة لمشروع واحد لو سمحت">Table for one project, please</span>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-xs text-inkDim mb-1.5" data-en="Name" data-ar="الاسم">Name</label>
+            <input type="text" name="name" required class="w-full bg-bg border border-line rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-ember transition-colors" data-en-placeholder="Your name" data-ar-placeholder="اسمك" placeholder="Your name">
+          </div>
+          <div>
+            <label class="block text-xs text-inkDim mb-1.5" data-en="Phone" data-ar="رقم الموبايل">Phone</label>
+            <input type="tel" name="phone" class="w-full bg-bg border border-line rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-ember transition-colors" data-en-placeholder="+20 1xx xxx xxxx" data-ar-placeholder="+20 1xx xxx xxxx" placeholder="+20 1xx xxx xxxx">
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-xs text-inkDim mb-1.5" data-en="Email" data-ar="الإيميل">Email</label>
+          <input type="email" name="email" required class="w-full bg-bg border border-line rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-ember transition-colors" data-en-placeholder="you@email.com" data-ar-placeholder="you@email.com" placeholder="you@email.com">
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-xs text-inkDim mb-1.5" data-en="Project type" data-ar="نوع المشروع">Project type</label>
+          <select name="project_type" class="w-full bg-bg border border-line rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-ember transition-colors">
+            <option data-en="Restaurant / Café" data-ar="مطعم / كافيه">Restaurant / Café</option>
+            <option data-en="Service business" data-ar="مشروع خدمي">Service business</option>
+            <option data-en="Personal / portfolio" data-ar="موقع شخصي">Personal / portfolio</option>
+            <option data-en="Something else" data-ar="حاجة تانية">Something else</option>
+          </select>
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-xs text-inkDim mb-1.5" data-en="Message" data-ar="الرسالة">Message</label>
+          <textarea name="message" rows="4" required class="w-full bg-bg border border-line rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-ember transition-colors resize-none" data-en-placeholder="Tell me a bit about your project…" data-ar-placeholder="احكيلي شوية عن مشروعك…" placeholder="Tell me a bit about your project…"></textarea>
+        </div>
+
+        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 bg-ember text-bg font-medium px-6 py-3.5 rounded-full hover:bg-[#ff8f5c] transition-colors">
+          <span data-en="Send request" data-ar="ابعت الطلب">Send request</span>
+          <i data-lucide="send" class="w-4 h-4 flip-rtl"></i>
+        </button>
+
+        <div id="formResult" class="text-xs text-center mt-4 text-inkDim"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="px-5 md:px-8 py-10 border-t border-line">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-inkDim">
+    <div class="flex items-center gap-2">
+      <i data-lucide="flame" class="w-4 h-4 text-ember"></i>
+      <span data-en="Mohamed Alaa — built with HTML, Tailwind &amp; JS." data-ar="محمد علاء — اتبنى بـ HTML وTailwind وJavaScript.">Mohamed Alaa — built with HTML, Tailwind &amp; JS.</span>
+    </div>
+    <div class="flex items-center gap-5">
+      <a href="https://github.com/muhamedalaa-dev" target="_blank" rel="noopener" class="hover:text-ink"><i data-lucide="github" class="w-4 h-4"></i></a>
+      <a href="mailto:mohameedalaa342@gmail.com" class="hover:text-ink"><i data-lucide="mail" class="w-4 h-4"></i></a>
+      <a href="tel:+201096631390" class="hover:text-ink"><i data-lucide="phone" class="w-4 h-4"></i></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  lucide.createIcons();
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ---------- Language toggle ---------- */
+  const langToggle = document.getElementById('langToggle');
+  const langDot = document.getElementById('langDot');
+  let currentLang = 'en';
+
+  function applyLang(lang){
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    langDot.textContent = lang === 'ar' ? 'EN' : 'AR';
+
+    document.querySelectorAll('[data-en]').forEach(el => {
+      const val = el.getAttribute(lang === 'ar' ? 'data-ar' : 'data-en');
+      if (val !== null) el.textContent = val;
+    });
+    document.querySelectorAll('[data-en-placeholder]').forEach(el => {
+      const val = el.getAttribute(lang === 'ar' ? 'data-ar-placeholder' : 'data-en-placeholder');
+      if (val !== null) el.setAttribute('placeholder', val);
+    });
+  }
+
+  langToggle.addEventListener('click', () => applyLang(currentLang === 'en' ? 'ar' : 'en'));
+
+  /* ---------- Mobile menu ---------- */
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  menuBtn.addEventListener('click', () => {
+    const isHidden = mobileMenu.classList.contains('hidden');
+    mobileMenu.classList.toggle('hidden');
+    menuBtn.innerHTML = isHidden ? '<i data-lucide="x" class="w-4 h-4"></i>' : '<i data-lucide="menu" class="w-4 h-4"></i>';
+    lucide.createIcons();
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mobileMenu.classList.add('hidden');
+    menuBtn.innerHTML = '<i data-lucide="menu" class="w-4 h-4"></i>';
+    lucide.createIcons();
+  }));
+
+  /* ---------- GSAP entrance + scroll reveals ---------- */
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!reduceMotion){
+    gsap.to('.reveal-hero', {
+      opacity: 1, y: 0, duration: 0.9, stagger: 0.12, ease: 'power3.out',
+      onStart: () => gsap.set('.reveal-hero', { y: 24 })
+    });
+    gsap.set('.reveal-hero', { opacity: 0, y: 24 });
+    gsap.to('.reveal-hero', { opacity: 1, y: 0, duration: 0.9, stagger: 0.12, ease: 'power3.out', delay: 0.1 });
+
+    gsap.utils.toArray('.reveal').forEach((el) => {
+      gsap.fromTo(el, { opacity: 0, y: 28 }, {
+        opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 88%' }
+      });
+    });
+  } else {
+    document.querySelectorAll('.reveal, .reveal-hero').forEach(el => el.style.opacity = 1);
+  }
+
+  /* ---------- Web3Forms submission ---------- */
+  const form = document.getElementById('contactForm');
+  const result = document.getElementById('formResult');
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    const formData = new FormData(form);
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+    result.textContent = currentLang === 'ar' ? 'بنبعت طلبك...' : 'Sending your request…';
+
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: json
+    })
+      .then(async (response) => {
+        const resJson = await response.json();
+        if (response.status === 200){
+          result.textContent = currentLang === 'ar' ? 'تم استلام طلبك، هرد عليك قريب!' : 'Got it — I\'ll get back to you soon!';
+        } else {
+          result.textContent = currentLang === 'ar' ? 'حصل خطأ، جرب تاني.' : 'Something went wrong. Please try again.';
+        }
+      })
+      .catch(() => {
+        result.textContent = currentLang === 'ar' ? 'حصل خطأ، جرب تاني.' : 'Something went wrong. Please try again.';
+      })
+      .then(() => {
+        form.reset();
+        setTimeout(() => { result.textContent = ''; }, 4000);
+      });
+  });
+</script>
+</body>
+</html>
